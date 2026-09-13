@@ -308,6 +308,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (view === 'card' || (view === 'auto' && vip)) {
       if (vipCardDisplayHolder) vipCardDisplayHolder.textContent = (vip && vip.name) ? vip.name.toUpperCase() : 'MEMBRU FONDATOR';
       if (vipCardDisplaySerial) vipCardDisplaySerial.textContent = (vip && vip.serial) ? vip.serial : 'SPHINX-VIP-00248';
+      const vipCardDisplayIssuer = document.getElementById('vipCardDisplayIssuer');
+      if (vipCardDisplayIssuer) vipCardDisplayIssuer.textContent = getTranslation('vipCardIssuer') || 'THE SILENT SPHINX • SANCTUARY ARCHIVE';
       if (vipRegistrationView) vipRegistrationView.style.display = 'none';
       if (vipIssuedCardView) vipIssuedCardView.style.display = 'block';
     } else {
@@ -4076,11 +4078,14 @@ document.addEventListener('DOMContentLoaded', () => {
           const currentVip = getSavedVipMember();
           const decryptingTxt = getTranslation('btnDecryptingArchive') || 'DECRIPTARE ARHIVĂ ÎN CURS...';
           const vipTag = currentVip ? ` [${currentVip.serial}]` : '';
+          newBtnUnlock.classList.remove('is-translating');
+          newBtnUnlock.classList.add('is-decrypting');
           newBtnUnlock.innerHTML = `
+            <div class="decrypt-progress-track" style="width: 25%;"></div>
             <span class="decrypt-main-text">⏳ ${decryptingTxt}</span>
-            <span class="decrypt-sub-tag active">✦ Cheie VIP Validată${vipTag} • Se încarcă Arhiva...</span>
+            <span class="decrypt-sub-tag active">✦ Cheie VIP Validată${vipTag} • Se inițializează Arhiva...</span>
           `;
-          newBtnUnlock.style.opacity = '0.85';
+          newBtnUnlock.style.opacity = '1';
         
           try {
             let enHtml = "";
@@ -4300,11 +4305,21 @@ document.addEventListener('DOMContentLoaded', () => {
                       grc: 'ΠΛΗΡΗΣ ΜΕΤΑΦΡΑΣΙΣ ΚΑΝΟΝΙΚΟΥ ΦΑΚΕΛΟΥ [GRC]'
                     };
                     const transLabel = transLabels[lang] || `INTEGRAL DOSSIER DECRYPTION [${lang.toUpperCase()}]`;
-                    newBtnUnlock.innerHTML = `<span>⚡</span> ${transLabel} (0%)...`;
+                    newBtnUnlock.classList.remove('is-decrypting');
+                    newBtnUnlock.classList.add('is-translating');
+                    newBtnUnlock.innerHTML = `
+                      <div class="decrypt-progress-track" style="width: 2%;"></div>
+                      <span class="decrypt-main-text">⚡ ${transLabel}</span>
+                      <span class="decrypt-sub-tag active">Se încarcă traducerea canonică • 0%</span>
+                    `;
 
                     try {
                       localizedDossierHtml = await translateLevel3Dossier(cleanedHtml, lang, (pct) => {
-                        newBtnUnlock.innerHTML = `<span>⚡</span> ${transLabel} (${pct}%)...`;
+                        newBtnUnlock.innerHTML = `
+                          <div class="decrypt-progress-track" style="width: ${pct}%;"></div>
+                          <span class="decrypt-main-text">⚡ ${transLabel}</span>
+                          <span class="decrypt-sub-tag active">Se încarcă traducerea canonică • ${pct}%</span>
+                        `;
                       });
                       try {
                         localStorage.setItem(cacheKey, localizedDossierHtml);
@@ -4312,6 +4327,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     } catch (transErr) {
                       console.warn("Translation failed, using original English:", transErr);
                       localizedDossierHtml = enHtml;
+                    } finally {
+                      newBtnUnlock.classList.remove('is-translating');
+                      newBtnUnlock.classList.remove('is-decrypting');
                     }
                   }
                 }

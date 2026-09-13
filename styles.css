@@ -3228,11 +3228,13 @@ button, input, select, textarea, .wonder-card, .modal-container, .pagination-bar
   align-items: center;
   justify-content: center;
   gap: 4px;
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(135deg, rgba(14, 28, 60, 0.95) 0%, rgba(6, 14, 32, 0.98) 100%);
   border: 1.5px solid rgba(245, 158, 11, 0.55);
   border-radius: 10px;
   padding: 10px 24px;
-  max-width: 440px;
+  max-width: 460px;
   width: auto;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.65), 0 0 16px rgba(245, 158, 11, 0.12);
@@ -3248,7 +3250,7 @@ button, input, select, textarea, .wonder-card, .modal-container, .pagination-bar
 }
 
 .btn-decrypt-console .decrypt-main-text {
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 1.2px;
   color: #f8fafc;
@@ -3256,6 +3258,8 @@ button, input, select, textarea, .wonder-card, .modal-container, .pagination-bar
   align-items: center;
   gap: 8px;
   text-transform: uppercase;
+  position: relative;
+  z-index: 2;
 }
 
 .btn-decrypt-console .decrypt-sub-tag {
@@ -3265,10 +3269,50 @@ button, input, select, textarea, .wonder-card, .modal-container, .pagination-bar
   font-weight: 600;
   font-family: var(--font-cinzel), serif;
   text-transform: uppercase;
+  position: relative;
+  z-index: 2;
 }
 
 .btn-decrypt-console .decrypt-sub-tag.active {
   color: #4ade80;
+}
+
+/* Starea de încărcare a traducerii: pulsantul își păstrează culoarea clasică, iar fontul devine verde turcoaz vizibil */
+.btn-decrypt-console.is-translating,
+.btn-decrypt-console.is-decrypting {
+  background: linear-gradient(135deg, rgba(14, 28, 60, 0.98) 0%, rgba(6, 14, 32, 1) 100%) !important;
+  border-color: rgba(45, 212, 191, 0.75) !important;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 245, 212, 0.35) !important;
+}
+
+.btn-decrypt-console.is-translating .decrypt-main-text,
+.btn-decrypt-console.is-decrypting .decrypt-main-text {
+  color: #00f5d4 !important; /* Verde turcoaz intens, ultra-vizibil */
+  font-weight: 800 !important;
+  letter-spacing: 1.4px;
+  text-shadow: 0 0 14px rgba(0, 245, 212, 0.85), 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+}
+
+.btn-decrypt-console.is-translating .decrypt-sub-tag,
+.btn-decrypt-console.is-decrypting .decrypt-sub-tag {
+  color: #5eead4 !important; /* Verde turcoaz deschis pentru procentaj și detalii */
+  font-weight: 700 !important;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(94, 234, 212, 0.6) !important;
+}
+
+/* Linie subțire de progres verde turcoaz la baza pulsantului */
+.btn-decrypt-console .decrypt-progress-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #0d9488 0%, #00f5d4 100%);
+  transition: width 0.25s ease-out;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow: 0 0 12px #00f5d4;
 }
 
 /* ==========================================================================

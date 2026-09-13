@@ -2447,6 +2447,33 @@ function getTranslation(key, lang) {
       return sphinxTranslations['en'][key];
     }
   }
+  var institutionalFallbacks = {
+    vipCardIssuedBy: {
+      ro: 'EMIS DE', en: 'ISSUED BY', it: 'RILASCIATO DA', fr: 'DÉLIVRÉ PAR', de: 'AUSGESTELLT VON',
+      es: 'EMITIDO POR', pt: 'EMITIDO POR', ru: 'ВЫДАНО', el: 'ΕΚΔΟΘΕΝ ΥΠΟ', la: 'EDITUM A',
+      grc: 'ΕΚΔΟΘΕΝ ΥΠΟ', ar: 'صادر عن', zh: '签发机构', ja: '発行機関', hi: 'जारीकर्ता'
+    },
+    vipCardIssuer: {
+      ro: 'THE SILENT SPHINX • ARHIVA CANONICĂ',
+      en: 'THE SILENT SPHINX • SANCTUARY ARCHIVE',
+      it: 'THE SILENT SPHINX • ARCHIVIO CANONICO',
+      fr: 'THE SILENT SPHINX • ARCHIVE CANONIQUE',
+      de: 'THE SILENT SPHINX • KANONISCHES ARCHIV',
+      es: 'THE SILENT SPHINX • ARCHIVO CANÓNICO',
+      pt: 'THE SILENT SPHINX • ARQUIVO CANÓNICO',
+      ru: 'THE SILENT SPHINX • КАНОНИЧЕСКИЙ АРХИВ',
+      el: 'THE SILENT SPHINX • ΚΑΝΟΝΙΚΟΝ ΑΡΧΕΙΟΝ',
+      la: 'THE SILENT SPHINX • TABULARIUM CANONICUM',
+      grc: 'THE SILENT SPHINX • ΚΑΝΟΝΙΚΟΝ ΑΡΧΕΙΟΝ',
+      ar: 'THE SILENT SPHINX • الأرشيف الأكاديمي المعتمد',
+      zh: 'THE SILENT SPHINX • 正典档案馆',
+      ja: 'THE SILENT SPHINX • 正典アーカイブ',
+      hi: 'THE SILENT SPHINX • प्रामाणिक अभिलेखागार'
+    }
+  };
+  if (institutionalFallbacks[key]) {
+    return institutionalFallbacks[key][l] || institutionalFallbacks[key]['en'] || institutionalFallbacks[key]['ro'];
+  }
   return '';
 }
 if (typeof window !== 'undefined') window.getTranslation = getTranslation;
