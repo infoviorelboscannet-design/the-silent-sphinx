@@ -732,6 +732,10 @@ button, input, select, textarea, .wonder-card, .modal-container, .pagination-bar
   gap: 6px;
 }
 
+.gallery-plate-card {
+  cursor: pointer;
+}
+
 .gallery-plate-action-hover {
   position: absolute;
   inset: 0;
@@ -741,6 +745,7 @@ button, input, select, textarea, .wonder-card, .modal-container, .pagination-bar
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .gallery-plate-card:hover .gallery-plate-action-hover {
@@ -761,6 +766,14 @@ button, input, select, textarea, .wonder-card, .modal-container, .pagination-bar
   display: flex;
   align-items: center;
   gap: 8px;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gallery-plate-btn-peek:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 24px rgba(56, 189, 248, 0.6);
 }
 
 .gallery-plate-info {
@@ -2425,6 +2438,10 @@ button, input, select, textarea, .wonder-card, .modal-container, .pagination-bar
 
 .modal-overlay.show {
   display: flex;
+}
+
+#wonderDeepModal {
+  z-index: 100005 !important;
 }
 
 .modal-container {

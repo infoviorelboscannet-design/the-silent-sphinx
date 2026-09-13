@@ -1567,10 +1567,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Attach click events
     galleryGrid.querySelectorAll('.gallery-plate-card').forEach(card => {
-      card.addEventListener('click', () => {
+      card.style.cursor = 'pointer';
+      const handleOpen = (e) => {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
         const id = card.getAttribute('data-wonder-id');
-        openWonderModal(id);
-      });
+        if (id) {
+          window.wasOpenedFromGallery = true;
+          if (galleryShowcaseModal) {
+            galleryShowcaseModal.style.display = 'none';
+          }
+          openWonderModal(id);
+        }
+      };
+
+      card.addEventListener('click', handleOpen);
+      const peekBtn = card.querySelector('.gallery-plate-btn-peek');
+      if (peekBtn) {
+        peekBtn.addEventListener('click', handleOpen);
+      }
     });
 
     const btnLoadMore = document.getElementById('btnLoadMorePlates');
@@ -1662,6 +1679,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeWonderModal() {
     wonderDeepModal.classList.remove('show');
     wonderDeepModal.classList.remove('active');
+    wonderDeepModal.style.display = 'none';
     window.currentOpenWonderId = null;
     const modalContainer = wonderDeepModal.querySelector('.modal-container');
     if (modalContainer) modalContainer.classList.remove('is-fullscreen');
@@ -1671,6 +1689,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const icon = btnToggleModalFullscreen.querySelector('.fullscreen-icon');
       if (label) label.textContent = getTranslation('btnFullscreenMode');
       if (icon) icon.textContent = '⛶';
+    }
+
+    if (window.wasOpenedFromGallery) {
+      window.wasOpenedFromGallery = false;
+      const galleryModal = document.getElementById('galleryShowcaseModal');
+      if (galleryModal) {
+        galleryModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    } else {
+      document.body.style.overflow = '';
     }
   }
 
@@ -4563,6 +4592,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     wonderDeepModal.classList.add('show');
+    wonderDeepModal.style.display = 'flex';
+    wonderDeepModal.style.zIndex = '100005';
+    document.body.style.overflow = 'hidden';
     history.replaceState(null, null, `#wonder-${wonderId}`);
   }
 
