@@ -4,6 +4,25 @@
  * High-Performance Search, Virtualized Loading, Interactive Sanctuary & Protected Admin Studio.
  */
 
+var currentLang = (typeof window !== 'undefined' && window.currentLang) || (typeof localStorage !== 'undefined' && localStorage.getItem('sphinx_preferred_lang')) || 'ro';
+var getTranslation = (typeof window !== 'undefined' && window.getTranslation) || function(k, l) {
+  var lang = l || (typeof window !== 'undefined' && window.currentLang) || (typeof currentLang !== 'undefined' ? currentLang : 'ro') || 'ro';
+  return (typeof sphinxTranslations !== 'undefined' && sphinxTranslations[lang] && sphinxTranslations[lang][k]) || '';
+};
+var getLocalizedText = (typeof window !== 'undefined' && window.getLocalizedText) || function(f, l) {
+  if (!f) return '';
+  if (typeof f === 'string') return f;
+  if (typeof f === 'object') {
+    var lang = l || (typeof window !== 'undefined' && window.currentLang) || (typeof currentLang !== 'undefined' ? currentLang : 'ro') || 'ro';
+    return f[lang] || f['ro'] || f['en'] || f['it'] || f[Object.keys(f)[0]] || '';
+  }
+  return String(f);
+};
+var setLanguage = (typeof window !== 'undefined' && window.setLanguage) || function(l) {
+  currentLang = l || 'ro';
+  if (typeof window !== 'undefined') window.currentLang = currentLang;
+};
+
 function formatDots(num) {
   if (num === null || num === undefined) return '';
   return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ".");

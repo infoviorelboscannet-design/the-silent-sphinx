@@ -2421,4 +2421,118 @@ var sphinxTranslations = {
   }
 };
 
+// --- The Silent Sphinx Internationalization & Localization Engine ---
+var currentLang = 'ro';
+try {
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('sphinx_preferred_lang')) {
+    currentLang = localStorage.getItem('sphinx_preferred_lang');
+  }
+} catch (e) {}
+
+if (typeof window !== 'undefined') {
+  window.currentLang = currentLang;
+  window.sphinxTranslations = sphinxTranslations;
+}
+
+function getTranslation(key, lang) {
+  var l = lang || (typeof window !== 'undefined' && window.currentLang) || (typeof currentLang !== 'undefined' ? currentLang : 'ro') || 'ro';
+  if (typeof sphinxTranslations !== 'undefined') {
+    if (sphinxTranslations[l] && sphinxTranslations[l][key] !== undefined) {
+      return sphinxTranslations[l][key];
+    }
+    if (sphinxTranslations['ro'] && sphinxTranslations['ro'][key] !== undefined) {
+      return sphinxTranslations['ro'][key];
+    }
+    if (sphinxTranslations['en'] && sphinxTranslations['en'][key] !== undefined) {
+      return sphinxTranslations['en'][key];
+    }
+  }
+  return '';
+}
+if (typeof window !== 'undefined') window.getTranslation = getTranslation;
+
+function getLocalizedText(field, lang) {
+  if (!field) return '';
+  if (typeof field === 'string') return field;
+  if (typeof field === 'object') {
+    var l = lang || (typeof window !== 'undefined' && window.currentLang) || (typeof currentLang !== 'undefined' ? currentLang : 'ro') || 'ro';
+    if (field[l]) return field[l];
+    if (field['ro']) return field['ro'];
+    if (field['en']) return field['en'];
+    if (field['it']) return field['it'];
+    var keys = Object.keys(field);
+    if (keys.length > 0 && field[keys[0]]) return field[keys[0]];
+  }
+  return String(field);
+}
+if (typeof window !== 'undefined') window.getLocalizedText = getLocalizedText;
+
+var SPHINX_LANG_FLAGS = {
+  en: '🇬🇧', ro: '🇷🇴', it: '🇮🇹', fr: '🇫🇷', de: '🇩🇪',
+  es: '🇪🇸', pt: '🇵🇹', ru: '🇷🇺', ar: '🇦🇪', el: '🇬🇷',
+  zh: '🇨🇳', hi: '🇮🇳', ja: '🇯🇵', la: '🏛️', grc: '🏺'
+};
+if (typeof window !== 'undefined') window.SPHINX_LANG_FLAGS = SPHINX_LANG_FLAGS;
+
+function setLanguage(lang) {
+  if (!lang) lang = 'ro';
+  currentLang = lang;
+  if (typeof window !== 'undefined') window.currentLang = lang;
+
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('sphinx_preferred_lang', lang);
+    }
+  } catch (e) {}
+
+  if (typeof document !== 'undefined') {
+    if (document.documentElement) {
+      document.documentElement.lang = lang;
+    }
+
+    var currentLangFlag = document.getElementById('currentLangFlag');
+    var currentLangCode = document.getElementById('currentLangCode');
+    if (currentLangFlag) currentLangFlag.textContent = SPHINX_LANG_FLAGS[lang] || '🇷🇴';
+    if (currentLangCode) currentLangCode.textContent = lang.toUpperCase();
+
+    document.querySelectorAll('.lang-option').forEach(function(btn) {
+      if (btn.getAttribute('data-lang') === lang) {
+        btn.classList.add('selected');
+      } else {
+        btn.classList.remove('selected');
+      }
+    });
+
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      var key = el.getAttribute('data-i18n');
+      var txt = getTranslation(key, lang);
+      if (txt) {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.placeholder = txt;
+        } else {
+          el.innerHTML = txt;
+        }
+      }
+    });
+  }
+
+  try {
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: lang } }));
+    }
+  } catch (e) {}
+}
+if (typeof window !== 'undefined') window.setLanguage = setLanguage;
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setLanguage(currentLang);
+    });
+  } else {
+    setLanguage(currentLang);
+  }
+}
+
+
 
